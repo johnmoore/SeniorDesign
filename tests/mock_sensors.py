@@ -4,11 +4,14 @@ import urllib2
 import time
 
 def UpdateSensor(sid, val):
-	url = 'http://128.197.180.250:5000/sensors/update/'
-	values = {'sid' : sid, 'val': val}
-	data = urllib.urlencode(values)
-	req = urllib2.Request(url, data)
-	response = urllib2.urlopen(req)
+	try:
+		url = 'http://128.197.180.250:5000/sensors/update/'
+		values = {'sid' : sid, 'val': val}
+		data = urllib.urlencode(values)
+		req = urllib2.Request(url, data)
+		response = urllib2.urlopen(req)
+	except Exception:
+		return False
 	return True
 
 random.seed()
@@ -46,6 +49,6 @@ while (True):
 		sval = sensor.svalue
 		print "Updating sensor '" + sensor.sname + "' to new value of " + str(sval)
 		UpdateSensor(sid, sval)
-	time.sleep(1)
+	time.sleep(2)
 
 
