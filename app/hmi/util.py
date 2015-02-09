@@ -26,7 +26,7 @@ def init_debug_device():
     test_device.add_object(MockFCObject(1, 'Rm 113 Humidity', 20.5, '%'))
     test_device.add_object(MockFCObject(2, 'Rm 113 Lighting', 80, '%'))
     test_device.add_object(MockFCObject(3, 'HVAC Fan Speed', 'LO', None))
-    test_device.add_object(MockFCObject(4, 'Fire Alarm System', 'OK', None))
+    test_device.add_object(MockFCObject(4, 'Fire Alarm System', 'OK', None, False))
     return test_device
 
 def Success():

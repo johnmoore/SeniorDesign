@@ -14,7 +14,6 @@ class MockFCObject(FCObject):
 			raise ObjectNotMutableError()
 		if not value:
 			value = self.value + round(random.random() - 0.5, 1)
-		self._historic_data.append((int(time.time()), self.value))
 		self.value = value
 
 	def get_historic_data(self, num_samples, interval):

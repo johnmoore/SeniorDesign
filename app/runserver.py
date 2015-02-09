@@ -18,6 +18,7 @@ def start_app(debug=True):
 	if debug == True:
 		random.seed()
 		app.DEVICE = util.init_debug_device()
+		app.AUTH_PIN = 123456
 	else:
 		pass
 	app.run(debug=debug, threaded=True, host='0.0.0.0')

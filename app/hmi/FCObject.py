@@ -1,4 +1,5 @@
 import exceptions
+import time
 
 
 class FCObject(object):
@@ -8,7 +9,6 @@ class FCObject(object):
 		self.units = units
 		self.value = value
 		self._mutable = mutable
-		self.update_value(value)
 
 	def __iter__(self):
 		return self._output()
@@ -19,6 +19,7 @@ class FCObject(object):
 		yield ('value', self.value)
 		yield ('formatted_value', self.formatted_value)
 		yield ('units', self.units)
+		yield ('detail', self._mutable)
 
 	def update_value(self):
 		raise exceptions.NotImplementedError()
@@ -38,4 +39,5 @@ class FCObject(object):
 	    return self._value
 	@value.setter
 	def value(self, value):
-	    self._value = value
+		self._value = value
+		self._historic_data.append((int(time.time()), self.value))

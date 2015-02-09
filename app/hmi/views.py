@@ -56,4 +56,30 @@ def get_historic_data():
 	except KeyError:
 		raise exceptions.ObjectDoesNotExistError()
 	historic_data = obj.get_historic_data(num_samples, interval)
-	return make_response(jsonify({'data': historic_data}), 200)
+	return make_response(jsonify({'data': historic_data, 'objname': obj.name}), 200)
+
+
+@app.route('/auth/set/', methods=['POST'])
+@util.crossdomain(origin='*')
+def set_pin():
+	if 'cpin' not in request.form:
+		raise exceptions.InvalidRequestError()
+	if 'npin' not in request.form:
+		raise exceptions.InvalidRequestError()
+	cpin = int(request.form['cpin'])
+	npin = int(request.form['npin'])
+	if cpin != app.AUTH_PIN:
+		return make_response(jsonify({'success': False}), 401)
+	app.AUTH_PIN = npin
+	return make_response(jsonify({'success': True}), 200)
+
+
+@app.route('/auth/verify/', methods=['GET'])
+@util.crossdomain(origin='*')
+def check_pin():
+	if 'pin' not in request.args:
+		raise exceptions.InvalidRequestError()
+	pin = int(request.args['pin'])
+	if pin != app.AUTH_PIN:
+		return make_response(jsonify({'success': False}), 401)
+	return make_response(jsonify({'success': True}), 200)

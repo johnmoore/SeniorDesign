@@ -5,7 +5,7 @@ import time
 
 def UpdateSensor(sid, val):
 	try:
-		url = 'http://128.197.180.250:5000/sensors/update/'
+		url = 'http://192.168.2.2:5000/sensors/update/'
 		values = {'sid' : sid, 'val': val}
 		data = urllib.urlencode(values)
 		req = urllib2.Request(url, data)
@@ -47,7 +47,7 @@ sensors = [MockSensor('Rm 113 Temperature', 72.1, 'F'), MockSensor('Rm 113 Humid
 while (True):
 	for sid, sensor in enumerate(sensors):
 		sval = sensor.svalue
-		print "Updating sensor '" + sensor.sname + "' to new value of " + str(sval)
+		print str(time.time()) + "] Updating sensor '" + sensor.sname + "' to new value of " + str(sval)
 		UpdateSensor(sid, sval)
 	time.sleep(2)
 
