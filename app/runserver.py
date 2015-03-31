@@ -1,10 +1,11 @@
-#!/home/debian/SeniorDesign/api/flask/bin/python
+#!/hmi/api/flask/bin/python
 from hmi import app
 from hmi import util
 from hmi import exceptions
 import logging
 import random
 import sys
+from flask import make_response
 
 app.DEVICE = None
 
@@ -18,8 +19,10 @@ def start_app(debug=True):
 	if debug == True:
 		random.seed()
 		app.DEVICE = util.init_debug_device()
-		app.AUTH_PIN = 123456
+		app.DEVICE.pin = 123456
 	else:
+		random.seed()
+		app.DEVICE = util.init_hmi_device()
 		pass
 	app.run(debug=debug, threaded=True, host='0.0.0.0')
 

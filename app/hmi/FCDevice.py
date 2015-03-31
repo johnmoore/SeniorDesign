@@ -20,3 +20,23 @@ class FCDevice(object):
 	@property
 	def objects(self):
 		raise exceptions.NotImplementedError()
+
+	@property
+	def pin(self):
+	    return self.get_pin()
+	@pin.setter
+	def pin(self, newpin):
+		return self.set_pin(newpin)
+
+	def get_pin(self):
+		raise NotImplementedError()
+
+	def set_pin(self, newpin):
+		raise NotImplementedError()
+
+	@property
+	def datetime(self):
+	    return self.get_datetime()
+
+	def get_datetime(self):
+		raise NotImplementedError()

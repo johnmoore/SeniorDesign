@@ -2,6 +2,8 @@ from flask import make_response
 from functools import update_wrapper
 from hmi.mocks.MockFCDevice import MockFCDevice
 from hmi.mocks.MockFCObject import MockFCObject
+from hmi.impl.BacNETFCDevice import BacNETFCDevice
+from hmi.impl.BacNETFCObject import BacNETFCObject
 
 def crossdomain(origin=None):
     if not isinstance(origin, basestring):
@@ -22,12 +24,17 @@ def crossdomain(origin=None):
 
 def init_debug_device():
     test_device = MockFCDevice()
-    test_device.add_object(MockFCObject(0, 'Rm 113 Temperature', 72.1, 'F'))
-    test_device.add_object(MockFCObject(1, 'Rm 113 Humidity', 20.5, '%'))
-    test_device.add_object(MockFCObject(2, 'Rm 113 Lighting', 80, '%'))
-    test_device.add_object(MockFCObject(3, 'HVAC Fan Speed', 'LO', None))
-    test_device.add_object(MockFCObject(4, 'Fire Alarm System', 'OK', None, False))
+    test_device.add_object(MockFCObject('analogInput', 0, 'Rm 113 Temperature', 72.1, 'F', True))
+    test_device.add_object(MockFCObject('analogInput', 1, 'Rm 113 Humidity', 20.5, '%', True))
+    test_device.add_object(MockFCObject('analogInput', 2, 'Rm 113 Lighting', 80, '%', True))
+    test_device.add_object(MockFCObject('analogInput', 3, 'HVAC Fan Speed', 'LO', None, True))
     return test_device
 
 def Success():
     return make_response("", 200)
+
+def init_hmi_device():
+    hmi_device = BacNETFCDevice(10004)
+    hmi_device.initialize()
+    #hmi_device.add_object(BacNETFCObject(hmi_device, 'analogValue', 201))
+    return hmi_device

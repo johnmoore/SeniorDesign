@@ -1,6 +1,7 @@
 from flask import jsonify
 from flask import make_response, request
 from hmi import app
+from hmi.mocks.MockFCObject import MockFCObject
 import exceptions
 import util
 
@@ -8,9 +9,10 @@ import util
 @app.route('/objects/list/', methods=['GET'])
 @util.crossdomain(origin='*')
 def list_objects():
+	objects = list(app.DEVICE.iter_objects())
 	return make_response(
-		jsonify({'total': app.DEVICE.num_objects, 
-				 'data': [dict(obj) for obj in app.DEVICE.iter_objects()]}), 200)
+		jsonify({'total': len(objects), 
+				 'data': [dict(obj) for obj in objects]}), 200)
 
 
 @app.route('/objects/update/', methods=['POST'])
@@ -22,7 +24,7 @@ def update_objects():
 		raise exceptions.InvalidRequestError()
 	id = int(request.form['id'])
 	newval = float(request.form['val'])
-	app.DEVICE.objects[id].update_value(newval)
+	app.DEVICE.objects[id].value = newval
 	return util.Success()
 
 
@@ -52,7 +54,7 @@ def get_historic_data():
 	num_samples = int(request.args['num'])
 	interval = int(request.args['interval'])
 	try:
-		obj = app.DEVICE.objects[id]
+		obj = app.DEVICE._objects[id]
 	except KeyError:
 		raise exceptions.ObjectDoesNotExistError()
 	historic_data = obj.get_historic_data(num_samples, interval)
@@ -68,9 +70,9 @@ def set_pin():
 		raise exceptions.InvalidRequestError()
 	cpin = int(request.form['cpin'])
 	npin = int(request.form['npin'])
-	if cpin != app.AUTH_PIN:
+	if cpin != app.DEVICE.pin:
 		return make_response(jsonify({'success': False}), 401)
-	app.AUTH_PIN = npin
+	app.DEVICE.pin = npin
 	return make_response(jsonify({'success': True}), 200)
 
 
@@ -80,6 +82,27 @@ def check_pin():
 	if 'pin' not in request.args:
 		raise exceptions.InvalidRequestError()
 	pin = int(request.args['pin'])
-	if pin != app.AUTH_PIN:
+	if pin != app.DEVICE.pin:
 		return make_response(jsonify({'success': False}), 401)
 	return make_response(jsonify({'success': True}), 200)
+
+
+@app.route('/objects/add/', methods=['POST'])
+@util.crossdomain(origin='*')
+def add_object():
+	print "adding object"
+	name = request.form['name']
+	val = request.form['value']
+	units = None
+	mutable = False
+	id = len(app.DEVICE.objects)
+	newobj = MockFCObject(id, name, val, units, mutable)
+	app.DEVICE.add_object(newobj)
+	return make_response(jsonify({'success': True}), 200)
+
+
+@app.route('/device/datetime/get/', methods=['GET'])
+@util.crossdomain(origin='*')
+def get_datetime():
+	return make_response(jsonify({'datetime': app.DEVICE.datetime}), 200)
+
