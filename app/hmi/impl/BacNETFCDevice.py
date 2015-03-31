@@ -34,6 +34,7 @@ class BacNETFCDevice(FCDevice):
 	@property
 	def objects(self):
 		r = self.read_obj_list()
+		seen = []
 		for objtype, objinst in r:
 			if objinst not in self._objects and objtype in ['analogInput']:
 				newobj = BacNETFCObject(self, objtype, objinst, self.read_obj_name(objtype, objinst), self.read_obj_units(objtype, objinst))
@@ -43,6 +44,10 @@ class BacNETFCDevice(FCDevice):
 				target = self.read_trend_log_target(objinst)
 				self._trend_logs[target] = newobj
 				self._objects[target]._historic = True
+			seen.append(objinst)
+		for c in self._objects.keys():
+			if c not in seen:
+				del self._objects[c]
 		return self._objects
 
 	@property
