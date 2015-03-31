@@ -24,7 +24,7 @@ def crossdomain(origin=None):
 
 def init_debug_device():
     test_device = MockFCDevice()
-    test_device.add_object(MockFCObject('analogInput', 0, 'Rm 113 Temperature', 72.1, 'F', True))
+    test_device.add_object(MockFCObject('analogInput', 0, 'Rm 113 Tesmperature', 72.1, 'F', True))
     test_device.add_object(MockFCObject('analogInput', 1, 'Rm 113 Humidity', 20.5, '%', True))
     test_device.add_object(MockFCObject('analogInput', 2, 'Rm 113 Lighting', 80, '%', True))
     test_device.add_object(MockFCObject('analogInput', 3, 'HVAC Fan Speed', 'LO', None, True))
@@ -34,7 +34,7 @@ def Success():
     return make_response("", 200)
 
 def init_hmi_device():
-    hmi_device = BacNETFCDevice(10004)
+    hmi_device = BacNETFCDevice(10001)
     hmi_device.initialize()
     #hmi_device.add_object(BacNETFCObject(hmi_device, 'analogValue', 201))
     return hmi_device

@@ -45,7 +45,7 @@ def run(spin=SPIN):
 
         # get the next task
         task, delta = taskManager.get_next_task()
-        
+
         try:
             # if there is a task to process, do it
             if task:
@@ -67,7 +67,7 @@ def run(spin=SPIN):
 #           _log.debug("delta: %r", delta)
 
             # loop for socket activity
-            asyncore.loop(timeout=delta, count=1)
+            asyncore.loop(timeout=0.01, count=1)
 
             # check for deferred functions
             while deferredFns:

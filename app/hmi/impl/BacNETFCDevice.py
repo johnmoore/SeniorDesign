@@ -15,7 +15,7 @@ class BacNETFCDevice(FCDevice):
 		super(BacNETFCDevice, self).__init__()
 		self._objects = {}
 		self.device_id = bacnet_id
-		self._client = HMIBacNETClient('10.211.55.4', self)
+		self._client = HMIBacNETClient('192.168.2.1', self)
 		self._trend_logs = {}
 
 	def initialize(self):
