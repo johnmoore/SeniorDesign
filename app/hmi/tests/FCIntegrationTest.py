@@ -6,10 +6,10 @@ from hmi.tests.HMITest import HMITest
 import json
 import random
 
-class FCIntegrationTest(HMITest):
+class FCIntegrationTest(object):
 	def _update_sensor(self, id, val):
 		try:
-			url = 'http://localhost:5000/objects/update/'
+			url = 'http://hmi:5000/objects/update/'
 			values = {'id' : id, 'val': val}
 			data = urllib.urlencode(values)
 			req = urllib2.Request(url, data)
@@ -20,7 +20,7 @@ class FCIntegrationTest(HMITest):
 
 	def _get_object_list(self):
 		try:
-			url = 'http://localhost:5000/objects/list/'
+			url = 'http://hmi:5000/objects/list/'
 			req = urllib2.Request(url)
 			response = urllib2.urlopen(req)
 		except Exception:
@@ -51,6 +51,7 @@ class FCIntegrationTest(HMITest):
 				self._update_sensor(int(obj['id']), val)
 
 		while (True):
+			objects = self._get_object_list()
 			for obj in objects['data']:
 				print obj
 				val = float(obj['value'])
@@ -63,8 +64,9 @@ class FCIntegrationTest(HMITest):
 					delta = 1
 				elif obj['units'] == 'PSI':
 					delta = 0.5
-				print 'to add:' + str(round(random.random() * delta - delta/2, 1))
-				val = val + round(random.random() * delta - delta/2, 1)
+				d = str(round(random.random() * delta - delta/2.0, 1))
+				print 'to add:' + str(d)
+				val = val + round(random.random() * delta - delta/2.0, 1)
 				print 'now: ' + str(val)
 				print str(time.time()) + "] Updating sensor '" + obj['name'] + "' to new value of " + str(val)
 				self._update_sensor(int(obj['id']), val)
